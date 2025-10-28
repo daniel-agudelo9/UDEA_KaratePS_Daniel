@@ -4,8 +4,8 @@ Feature: Transfer funds in Parabank
   Background:
     * url baseUrl
     * header Accept = 'application/json'
-    * def val_fromAccountId = '54321'
-    * def val_toAccountId = '15675'
+    * def val_fromAccountId = '13344'
+    * def val_toAccountId = '14676'
     * def fakerObj = new faker()
     * def val_amount = fakerObj.number().numberBetween(1, 200)
     * def val_fromAccountId_error = fakerObj.number().randomNumber(5, true)
@@ -28,3 +28,13 @@ Feature: Transfer funds in Parabank
     When method POST
     Then status 400
     And match response == "Could not find account number " + val_fromAccountId_error + " and/or " + val_toAccountId_error
+
+
+  Scenario: Transfer to Same Account
+    Given path 'transfer'
+    And param fromAccountId = val_fromAccountId
+    And param toAccountId = val_fromAccountId
+    And param amount = val_amount
+    When method POST
+    Then status 200
+    And match response == "Successfully transferred $" + val_amount + " from account #" + val_fromAccountId + " to account #" + val_fromAccountId
